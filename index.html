@@ -5992,9 +5992,8 @@ output = floor((input * MAXOUTSAMPLE / MAXINSAMPLE) + 0.5)
 
       <p>For the <a class="chunk" href="#eXIf">eXIf</a> chunk, the Exif Specification [[CIPA-DC-008]] does not contain an express
       requirement that tag "value offset" pointers must actually point to a valid address within the file.
-      (See Paragraph 4.6.2, which describes the Exif IFD structure.)
-      Although this requirement seems to be implicit, decoders should be prepared to encounter invalid pointers and deal with
-      them appropriately.</p>
+      This requirement is merely implied. (See Paragraph 4.6.2, which describes the Exif IFD structure.)
+      Regardless, decoders should be prepared to encounter invalid pointers and to handle them appropriately.</p>
 
       <p>Considering that chunks can be extremely large (up to 2<sup>31</sup>-1 bytes long), a poorly written decoder might be
       subject to failures that typically occur when allocating huge memory buffers. However, a properly written decoder should
