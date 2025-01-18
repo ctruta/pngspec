@@ -5960,7 +5960,7 @@ output = floor((input * MAXOUTSAMPLE / MAXINSAMPLE) + 0.5)
       <p>A PNG datastream is composed of a collection of explicitly typed chunks.
       Chunks whose contents are defined by the
       specification could actually contain anything, including malicious code.
-      Similarly there could be data after the <a class="chunk" href="#11IEND">IEND</a> chunk
+      Similarly, there could be data after the <a class="chunk" href="#11IEND">IEND</a> chunk
       which could contain anything, including malicious code.
       There is no known risk that such malicious code
       could be executed on the recipient's computer <em>as a result of decoding the PNG image</em>.
@@ -5970,6 +5970,18 @@ output = floor((input * MAXOUTSAMPLE / MAXINSAMPLE) + 0.5)
       <p>The possible security risks associated with future chunk types cannot be specified at this time. Security issues will be
       considered when defining future public chunks. There is no additional security risk associated with unknown or unimplemented
       chunk types, because such chunks will be ignored, or at most be copied into another PNG datastream.</p>
+
+      <p>The PNG signature is designed to detect and categorize common file transmission errors.
+      Moreover, every chunk starts with a length field, making it easier to implement decoders resistant to fraudulent chunks
+      that overflow buffers.
+      And, finally, the CRC at the end of every chunk provides a robust defence against accidentally corrupted data, although
+      decoders should still perform chunk-specific integrity checks to protect against any intentionally damaged payloads
+      accompanied by correct CRCs.</p>
+
+      <p>A decoder that fails to check CRCs could be subject to data corruption. A likely consequence of such
+      corruption is incorrectly displayed pixels within the image. Worse things might happen if the CRC of the <a class=
+      "chunk" href="#11IHDR">IHDR</a> chunk is not checked and the width or height fields are corrupted. See <a href=
+      "#13Error-checking"></a>.</p>
 
       <p>The <a class="chunk" href="#11iTXt">iTXt</a>, <a class="chunk" href="#11tEXt">tEXt</a>, and <a class="chunk" href=
       "#11zTXt">zTXt</a> chunks contain keywords and data that are meant to be displayed as plain text. The <a class="chunk" href=
@@ -5984,17 +5996,9 @@ output = floor((input * MAXOUTSAMPLE / MAXINSAMPLE) + 0.5)
       Although this requirement seems to be implicit, decoders should be prepared to encounter invalid pointers and deal with
       them appropriately.</p>
 
-      <p>Every chunk begins with a length field, which makes it easier to write decoders that are invulnerable to fraudulent chunks
-      that attempt to overflow buffers. The CRC at the end of every chunk provides a robust defence against accidentally
-      corrupted data. The PNG signature bytes provide early detection of common file transmission errors.</p>
-
-      <p>A decoder that fails to check CRCs could be subject to data corruption. The only likely consequence of such
-      corruption is incorrectly displayed pixels within the image. Worse things might happen if the CRC of the <a class=
-      "chunk" href="#11IHDR">IHDR</a> chunk is not checked and the width or height fields are corrupted. See <a href=
-      "#13Error-checking"></a>.</p>
-
-      <p>A poorly written decoder might be subject to buffer overflow, because chunks can be extremely large, up to
-      2<sup>31</sup>-1 bytes long. But properly written decoders will handle large chunks without difficulty.</p>
+      <p>Considering that chunks can be extremely large (up to 2<sup>31</sup>-1 bytes long), a poorly written decoder might be
+      subject to failures that typically occur when allocating huge memory buffers. However, a properly written decoder should
+      be able to handle chunks of any size gracefully.</p>
     </section>
 
     <section id="Privacy-considerations">
